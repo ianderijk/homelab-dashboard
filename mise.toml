@@ -1,0 +1,6 @@
+[tools]
+python = "3.14"
+prek = "latest"
+
+[env]
+KANEO_KEY = "rzMlGczObwuCXqJAPoyvAfCFdLxFGiRbkSILeNsfnRghnnQivlqHUqmxRitPxMpU"
