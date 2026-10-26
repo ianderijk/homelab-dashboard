@@ -1,0 +1,5 @@
+mise.toml
+
+.venv
+*__pycache__
+.ruff_cache
