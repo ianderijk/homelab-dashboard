@@ -5,3 +5,5 @@ mise.toml
 .ruff_cache
 
 plan.md
+
+dashboard.db

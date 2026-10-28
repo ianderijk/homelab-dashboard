@@ -2,19 +2,36 @@ import os
 import socket
 from abc import ABC, abstractmethod
 from typing import Literal
+from datetime import UTC, datetime
 
 import requests
 
+from service.dbutils import execute_query, execute_statement
+
 
 class Service(ABC):
-    def __init__(self, port: int, method: Literal["http", "tcp"]) -> None:
+    def __init__(self, port: int, method: Literal["http", "tcp"], name: str) -> None:
         super().__init__()
         self.port = port
         self.method = method
+        self.name = name
 
     @property
     def host(self) -> str:
         return "http://192.168.0.29:"
+
+    @property
+    def service_id(self) -> int:
+        query = (
+            "select service_id from dim_services where service_name = :service_name;"
+        )
+        params = {"service_name": self.name}
+        data = execute_query(query, params)
+        return data[0][0]
+
+    @property
+    def record_datetime(self) -> datetime:
+        return datetime.now(tz=UTC)
 
     def _http_is_up(self, **kwargs) -> bool:
         if kwargs:
@@ -70,8 +87,8 @@ class RustFS(Service):
 
 
 class Kaneo(Service):
-    def __init__(self, port: int, method: Literal["http", "tcp"]) -> None:
-        super().__init__(port, method)
+    def __init__(self, port: int, method: Literal["http", "tcp"], name: str) -> None:
+        super().__init__(port, method, name)
         self.session = requests.Session()
         self.session.headers.update(
             {
@@ -81,7 +98,9 @@ class Kaneo(Service):
         )
 
     def is_up(self, **kwargs) -> bool:
-        response = self.session.request("GET", f"{self.host}{self.port}/{kwargs.get('health')}")
+        response = self.session.request(
+            "GET", f"{self.host}{self.port}/{kwargs.get('health')}"
+        )
         return 200 <= response.status_code < 300
 
 
@@ -90,15 +109,26 @@ class Postgres(Service):
         return super().is_up()
 
 
-SERVICES = {
-    "Chapflix": Chapflix(8042, "http"),
-    "ChapflixAPI": ChapflixAPI(8043, "http"),
-    "PyPi": PyPi(8080, "http"),
-    "RustFS": RustFS(9001, "http"),
-    "Kaneo": Kaneo(5173, "http"),
-    "Postgres": Postgres(6543, "tcp"),
-    "LogListener": LogListener(9020, "tcp"),
-}
+SERVICES = (
+    Chapflix(8042, "http", "Chapflix"),
+    ChapflixAPI(8043, "http", "ChapflixAPI"),
+    PyPi(8080, "http", "PyPi"),
+    RustFS(9001, "http", "RustFS"),
+    Kaneo(5173, "http", "Kaneo"),
+    Postgres(6543, "tcp", "Postgres"),
+    LogListener(9020, "tcp", "LogListener"),
+)
 
-for service in SERVICES.values():
-    print(service.is_up())
+
+def write_availability() -> None:
+    for service in SERVICES:
+        insert = "insert into fact_services (service_id, status, datetime) values (:service_id, :status, :datetime);"
+        params = {
+            "service_id": service.service_id,
+            "status": service.is_up(),
+            "datetime": service.record_datetime,
+        }
+        execute_statement(insert, params)
+
+if __name__ == "__main__":
+    write_availability()
