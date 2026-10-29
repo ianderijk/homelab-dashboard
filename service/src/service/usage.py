@@ -1,21 +1,7 @@
-import os
 import subprocess
-from pathlib import Path
 
-from service.dbutils import execute_query, execute_statement
-
-class MissingEnvVarError(Exception): ...
-
-
-def _get_root() -> Path:
-    root = os.getenv("ROOT")
-    if root:
-        return Path(root)
-
-    raise MissingEnvVarError("No ROOT variable set.")
-
-
-ROOT = _get_root()
+from utils.dbutils import execute_query, execute_statement
+from utils.constants import ROOT
 
 
 class Drive:

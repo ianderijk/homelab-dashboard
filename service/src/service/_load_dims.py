@@ -1,4 +1,4 @@
-from service.dbutils import execute_statement
+from utils.dbutils import execute_statement
 
 
 def services() -> None:

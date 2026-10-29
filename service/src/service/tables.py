@@ -1,4 +1,4 @@
-from service.dbutils import execute_statement
+from utils.dbutils import execute_statement
 
 DIM_SERVICES = """
     create table if not exists  dim_services (

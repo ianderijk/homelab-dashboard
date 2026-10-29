@@ -6,7 +6,7 @@ from datetime import UTC, datetime
 
 import requests
 
-from service.dbutils import execute_query, execute_statement
+from utils.dbutils import execute_query, execute_statement
 
 
 class Service(ABC):

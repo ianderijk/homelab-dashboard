@@ -1,0 +1,10 @@
+[tool.uv.workspace]
+members = ["api", "service", "utils"]
+
+[tool.uv.sources]
+utils = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "ruff>=0.17.3",
+]
