@@ -86,7 +86,7 @@ class PyPi(Service):
 
 
 class LogListener(Service):
-p    def is_up(self, **kwargs) -> bool:
+    def is_up(self, **kwargs) -> bool:
         return super().is_up()
 
 
