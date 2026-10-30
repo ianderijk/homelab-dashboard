@@ -14,7 +14,7 @@ FACT_SERVICES = """
     service_id integer,
     status bit,
     datetime timestamp
-    )
+    );
     """
 
 DIM_DISCS = """
@@ -22,7 +22,7 @@ DIM_DISCS = """
     disc_id integer primary key autoincrement,
     mount text,
     filesystem text
-    )
+    );
     """
 
 FACT_DISCS = """
@@ -31,9 +31,8 @@ FACT_DISCS = """
     disc_id integer,
     space integer,
     used integer,
-    free numeric,
     datetime timestamp
-    )
+    );
     """
 
 

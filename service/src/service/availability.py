@@ -16,6 +16,14 @@ class Service(ABC):
         self.method = method
         self.name = name
 
+        self._session = requests.Session()
+        self._session.headers.update(
+            {
+                "Authorization": f"Bearer {os.getenv('KANEO_KEY', None)}",
+                "Accept": "application/json",
+            }
+        )
+
     @property
     def host(self) -> str:
         return "http://192.168.0.29:"
@@ -38,8 +46,9 @@ class Service(ABC):
             url = f"{self.host}{self.port}/{kwargs.get('health')}"
         else:
             url = f"{self.host}{self.port}"
+
         try:
-            response = requests.get(url, timeout=5)
+            response = self._session.request("GET", url)
             return 200 <= response.status_code < 300
         except requests.RequestException:
             return False
@@ -77,7 +86,7 @@ class PyPi(Service):
 
 
 class LogListener(Service):
-    def is_up(self, **kwargs) -> bool:
+p    def is_up(self, **kwargs) -> bool:
         return super().is_up()
 
 
@@ -87,21 +96,8 @@ class RustFS(Service):
 
 
 class Kaneo(Service):
-    def __init__(self, port: int, method: Literal["http", "tcp"], name: str) -> None:
-        super().__init__(port, method, name)
-        self.session = requests.Session()
-        self.session.headers.update(
-            {
-                "Authorization": f"Bearer {os.getenv('KANEO_KEY')}",
-                "Accept": "application/json",
-            }
-        )
-
     def is_up(self, **kwargs) -> bool:
-        response = self.session.request(
-            "GET", f"{self.host}{self.port}/{kwargs.get('health')}"
-        )
-        return 200 <= response.status_code < 300
+        return super().is_up(health="health")
 
 
 class Postgres(Service):
@@ -125,10 +121,11 @@ def write_availability() -> None:
         insert = "insert into fact_services (service_id, status, datetime) values (:service_id, :status, :datetime);"
         params = {
             "service_id": service.service_id,
-            "status": service.is_up(),
+            "status": service.is_up(health="health"),
             "datetime": service.record_datetime,
         }
         execute_statement(insert, params)
+
 
 if __name__ == "__main__":
     write_availability()

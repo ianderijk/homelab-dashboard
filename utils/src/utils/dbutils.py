@@ -1,10 +1,11 @@
 import sqlite3
 from pathlib import Path
 
+from utils.constants import ROOT
+
 
 def _get_db_path() -> Path:
-    root = Path(__file__).parents
-    return root[3] / "dashboard.db"
+    return ROOT / "ExtDrive/homelab-dashboard/dashboard.db"
 
 
 DB_PATH = _get_db_path()

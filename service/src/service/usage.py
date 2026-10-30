@@ -12,22 +12,17 @@ class Drive:
         space: int,
         used: int,
         available: int,
-        free: str,
     ) -> None:
         self.mount = mount
         self.filesystem = filesystem
         self.space = space
         self.used = used
         self.available = available
-        self.free = free
-
-    def __str__(self) -> str:
-        return f"{self.mount}: {self.free}"
 
     @property
     def disc_id(self) -> int:
-        query = "select disc_id from dim_discs where mount = :mount;"
-        params = {"mount": self.mount}
+        query = "select disc_id from dim_discs where filesystem = :filesystem;"
+        params = {"filesystem": self.filesystem}
         data = execute_query(query, params)
         return data[0][0]
 
@@ -45,14 +40,12 @@ def find_drives() -> list[Drive]:
         space = int(line[1])
         used = int(line[2])
         available = int(line[3])
-        free = line[4]
         drive = Drive(
             mount=mount,
             filesystem=filesystem,
             space=space,
             used=used,
             available=available,
-            free=free,
         )
         drives.append(drive)
     return drives
@@ -60,8 +53,8 @@ def find_drives() -> list[Drive]:
 
 def record_drives(drives: list[Drive]) -> None:
     for drive in drives:
-        insert = "insert into fact_discs (disc_id, space, used, free) values (:disc_id, :space, :used, :free);"
-        params = {"disc_id": drive.disc_id, "space": drive.space, "used": drive.used, "free": drive.free}
+        insert = "insert into fact_discs (disc_id, space, used) values (:disc_id, :space, :used);"
+        params = {"disc_id": drive.disc_id, "space": drive.space, "used": drive.used}
         execute_statement(insert, params)
 
 
