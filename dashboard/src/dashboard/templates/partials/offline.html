@@ -1,0 +1,5 @@
+{% from "macros.html" import status_badge %}
+<div class="card notice" role="status">
+  {{ status_badge('critical', '!', 'API offline') }}
+  <p>The homelab API could not be reached. Retrying every {{ refresh_seconds }} seconds.</p>
+</div>

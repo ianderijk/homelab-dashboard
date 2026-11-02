@@ -94,3 +94,17 @@ def get_number_services() -> dict[str, int]:
     query = "select count(service_id) from dim_services;"
     data = execute_query(query)
     return {"services": data[0][0]}
+
+
+def get_service_names() -> dict[str, list]:
+    query = "select service_name from dim_services;"
+    data = execute_query(query)
+    services = [x[0] for x in data]
+    return {"services": services}
+
+
+def get_disc_names() -> dict[str, list]:
+    query = "select mount from dim_discs;"
+    data = execute_query(query)
+    discs = [x[0] for x in data]
+    return {"discs": discs}

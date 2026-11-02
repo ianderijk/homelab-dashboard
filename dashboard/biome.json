@@ -1,0 +1,15 @@
+{
+  "files": {
+    "includes": ["src/dashboard/static/**", "!src/dashboard/static/htmx.min.js"]
+  },
+  "formatter": {
+    "indentStyle": "space",
+    "indentWidth": 2
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended"
+    }
+  }
+}

@@ -6,19 +6,24 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "api",
+    "dashboard",
     "service",
 ]
 
 [tool.uv.workspace]
-members = ["api", "service", "utils"]
+members = ["api", "dashboard", "service", "utils"]
 
 [tool.uv.sources]
 api = { workspace = true }
+dashboard = { workspace = true }
 service = { workspace = true }
 utils = { workspace = true }
 
 [dependency-groups]
 dev = [
+    "djlint>=1.49.3",
+    "pytest>=9.2.0",
+    "respx>=0.23.1",
     "ruff>=0.17.3",
     "ty",
 ]

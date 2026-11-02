@@ -1,0 +1,41 @@
+{% from "macros.html" import status_badge %}
+<section class="card" aria-labelledby="discs-heading">
+  <h2 id="discs-heading">Discs</h2>
+  <ul class="disc-list">
+    {% for row in overview.discs %}
+      <li class="disc">
+        <div class="disc-header">
+          <span class="disc-mount">{{ row.mount }}</span>
+          {% if row.usage %}
+            <span class="disc-device muted">{{ row.usage.name }}</span>
+            {% if row.usage.is_low %}{{ status_badge('critical', '!', 'Low space') }}{% endif %}
+          {% endif %}
+        </div>
+        {% if row.usage %}
+          {% set used_percent = (row.usage.used_fraction * 100) | round(1) %}
+          {# djlint:off H021 #}
+          <div class="meter{% if row.usage.is_low %} meter--low{% endif %}"
+               role="meter"
+               aria-label="{{ row.mount }} used space"
+               aria-valuemin="0"
+               aria-valuemax="100"
+               aria-valuenow="{{ used_percent }}"
+               aria-valuetext="{{ used_percent }}% used"
+               style="--used: {{ row.usage.used_fraction }};
+                      --threshold: {{ 1 - row.usage.warning }}">
+            <div class="meter-fill"></div>
+            <div class="meter-threshold"
+                 title="Warning below {{ row.usage.warning | percent }} free"></div>
+          </div>
+          {# djlint:on #}
+          <p class="disc-detail">
+            {{ row.usage.free | size }} free ({{ row.usage.free_fraction | percent }})
+            of {{ row.usage.size | size }}
+          </p>
+        {% else %}
+          <p class="disc-detail muted">No data yet</p>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</section>
