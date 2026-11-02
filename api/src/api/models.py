@@ -11,7 +11,7 @@ class Service(BaseModel):
 class Disc(BaseModel):
     name: str
     mount: str
-    size: int
-    used: int
+    size: float
+    used: float
     free: float
     warning: float = 0.25

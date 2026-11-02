@@ -1,7 +1,9 @@
 from typing import Any
 
-from api.models import Service, Disc
+from fastapi import HTTPException
 from utils.dbutils import execute_query
+
+from api.models import Disc, Service
 
 
 def _get_service_details(service_name: str) -> dict[str, Any]:
@@ -12,47 +14,37 @@ def _get_service_details(service_name: str) -> dict[str, Any]:
         ,fs.status
         ,fs.datetime
     from fact_services as fs
-    left join dim_services as ds on fs.service_id = ds.service_id
+    inner join dim_services as ds on fs.service_id = ds.service_id
     where ds.service_name = :service_name
+    order by fs.datetime desc
     limit 1
     """
     params = {"service_name": service_name}
     data = execute_query(query, params)
+    if not data:
+        raise HTTPException(
+            status_code=404, detail=f"No data for service {service_name}"
+        )
     values = (
         "service_id",
         "service_name",
         "port",
         "status",
-        "datetime"
+        "datetime",
     )
     return {k: v for k, v in zip(values, data[0])}
 
 
 def _calculate_service_uptime(service_name: str) -> float:
     query = """
-    select fs.status
-        ,fs.datetime
+    select avg(fs.status)
     from fact_services as fs
-    left join dim_services as ds on fs.service_id = ds.service_id
+    inner join dim_services as ds on fs.service_id = ds.service_id
     where ds.service_name = :service_name
     """
     params = {"service_name": service_name}
     data = execute_query(query, params)
-
-    uptime = 0
-    downtime = 0
-    for i, record in enumerate(data):
-        if i == len(data) - 1:
-            break
-
-        cur_status = record[0]
-        next_status = data[i][0]
-        if cur_status and next_status:
-            uptime += 1
-        elif not next_status:
-            downtime += 1
-
-    return uptime / (uptime + downtime)
+    return data[0][0] or 0.0
 
 
 def get_service_data(service_name: str) -> Service:
@@ -65,3 +57,34 @@ def get_service_data(service_name: str) -> Service:
         uptime=uptime,
     )
     return service
+
+
+def _convert_kib_to_gib(value: int) -> float:
+    return value / 1024**2
+
+
+def get_disc_data(mount: str) -> Disc:
+    query = """
+    select dd.mount
+        ,dd.filesystem
+        ,fd.space
+        ,fd.used
+    from fact_discs as fd
+    inner join dim_discs as dd on fd.disc_id = dd.disc_id
+    where dd.mount = :mount
+    order by fd.id desc
+    limit 1
+    """
+    params = {"mount": mount}
+    data = execute_query(query, params)
+    if not data:
+        raise HTTPException(status_code=404, detail=f"No data for disc {mount}")
+    mount, filesystem, space, used = data[0]
+
+    return Disc(
+        name=filesystem,
+        mount=mount,
+        size=_convert_kib_to_gib(space),
+        used=_convert_kib_to_gib(used),
+        free=_convert_kib_to_gib(space - used),
+    )
