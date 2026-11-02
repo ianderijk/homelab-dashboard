@@ -1,0 +1,16 @@
+<section id="overview"
+         class="overview"
+         hx-get="/panels/overview"
+         hx-trigger="every {{ refresh_seconds }}s"
+         hx-swap="outerHTML">
+  {% if api_offline %}
+    {% include "partials/offline.html" %}
+  {% else %}
+    <p class="overview-meta">
+      Updated <time datetime="{{ overview.fetched_at.isoformat() }}">{{ overview.fetched_at.strftime("%H:%M:%S") }}</time>
+    </p>
+    {% include "partials/kpis.html" %}
+    {% include "partials/services.html" %}
+    {% include "partials/discs.html" %}
+  {% endif %}
+</section>

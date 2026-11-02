@@ -1,0 +1,16 @@
+<div class="kpi-row">
+  <div class="card stat-tile">
+    <p class="stat-label">Services monitored</p>
+    <p class="stat-value">{{ overview.service_count }}</p>
+  </div>
+  <div class="card stat-tile">
+    <p class="stat-label">Services up</p>
+    <p class="stat-value">{{ overview.services_up }}</p>
+    <p class="stat-detail">of {{ overview.services_reporting }} reporting</p>
+  </div>
+  <div class="card stat-tile">
+    <p class="stat-label">Discs low on space</p>
+    <p class="stat-value">{{ overview.discs_low }}</p>
+    <p class="stat-detail">of {{ overview.discs | length }} monitored</p>
+  </div>
+</div>

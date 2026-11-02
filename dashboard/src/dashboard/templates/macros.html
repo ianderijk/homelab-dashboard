@@ -1,0 +1,5 @@
+{% macro status_badge(kind, icon, label) %}
+  <span class="status status--{{ kind }}">
+    <span class="status-icon" aria-hidden="true">{{ icon }}</span>{{ label }}
+  </span>
+{% endmacro %}

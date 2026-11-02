@@ -1,0 +1,34 @@
+{% from "macros.html" import status_badge %}
+<section class="card" aria-labelledby="services-heading">
+  <h2 id="services-heading">Services</h2>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th scope="col">Service</th>
+        <th scope="col">Status</th>
+        <th scope="col" class="numeric">Port</th>
+        <th scope="col" class="numeric">Uptime</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in overview.services %}
+        <tr>
+          <th scope="row">{{ row.name }}</th>
+          {% if row.status %}
+            <td>
+              {% if row.status.status %}
+                {{ status_badge('good', '✓', 'Up') }}
+              {% else %}
+                {{ status_badge('critical', '✕', 'Down') }}
+              {% endif %}
+            </td>
+            <td class="numeric">{{ row.status.port }}</td>
+            <td class="numeric">{{ row.status.uptime | percent }}</td>
+          {% else %}
+            <td colspan="3" class="muted">No data yet</td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
