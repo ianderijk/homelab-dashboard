@@ -40,7 +40,7 @@ def _calculate_service_uptime(service_name: str) -> float:
     select avg(fs.status)
     from fact_services as fs
     inner join dim_services as ds on fs.service_id = ds.service_id
-    where ds.service_name = :service_name
+    where ds.service_name = :service_name;
     """
     params = {"service_name": service_name}
     data = execute_query(query, params)
@@ -73,7 +73,7 @@ def get_disc_data(mount: str) -> Disc:
     inner join dim_discs as dd on fd.disc_id = dd.disc_id
     where dd.mount = :mount
     order by fd.id desc
-    limit 1
+    limit 1;
     """
     params = {"mount": mount}
     data = execute_query(query, params)
@@ -88,3 +88,9 @@ def get_disc_data(mount: str) -> Disc:
         used=_convert_kib_to_gib(used),
         free=_convert_kib_to_gib(space - used),
     )
+
+
+def get_number_services() -> dict[str, int]:
+    query = "select count(service_id) from dim_services;"
+    data = execute_query(query)
+    return {"services": data[0][0]}
