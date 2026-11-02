@@ -13,3 +13,5 @@ class Disc(BaseModel):
     mount: str
     size: int
     used: int
+    free: float
+    warning: float = 0.25
