@@ -1,4 +1,5 @@
 import subprocess
+from datetime import datetime, UTC
 
 from utils.dbutils import execute_query, execute_statement
 from utils.constants import ROOT
@@ -53,8 +54,13 @@ def find_drives() -> list[Drive]:
 
 def record_drives(drives: list[Drive]) -> None:
     for drive in drives:
-        insert = "insert into fact_discs (disc_id, space, used) values (:disc_id, :space, :used);"
-        params = {"disc_id": drive.disc_id, "space": drive.space, "used": drive.used}
+        insert = "insert into fact_discs (disc_id, space, used, datetime) values (:disc_id, :space, :used, :datetime);"
+        params = {
+            "disc_id": drive.disc_id,
+            "space": drive.space,
+            "used": drive.used,
+            "datetime": datetime.now(tz=UTC),
+        }
         execute_statement(insert, params)
 
 

@@ -12,4 +12,5 @@ def _get_root() -> Path:
 
     raise MissingEnvVarError("No ROOT variable set.")
 
+
 ROOT = _get_root()
