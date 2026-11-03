@@ -5,7 +5,7 @@ from utils.constants import ROOT
 
 
 def _get_db_path() -> Path:
-    return ROOT / "ExtDrive/homelab-dashboard/dashboard.db"
+    return ROOT / "Backup/homelab-dashboard/dashboard.db"
 
 
 DB_PATH = _get_db_path()

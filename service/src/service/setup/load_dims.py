@@ -19,7 +19,8 @@ def services() -> None:
 
 def discs() -> None:
     discs = {
-        "/media/idr/ExtDrive": "/dev/sda2",
+        "/media/ianderijk/Backup": "/dev/sda1",
+        "/media/ianderijk/ChapflixMed": "/dev/sdb1",
     }
     for k, v in discs.items():
         insert = (
