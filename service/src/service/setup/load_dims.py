@@ -29,10 +29,10 @@ def discs() -> None:
         execute_statement(insert, params)
 
 
-def main():
+def create_dims():
     services()
     discs()
 
 
 if __name__ == "__main__":
-    main()
+    create_dims()

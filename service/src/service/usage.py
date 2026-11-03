@@ -64,10 +64,10 @@ def record_drives(drives: list[Drive]) -> None:
         execute_statement(insert, params)
 
 
-def main() -> None:
+def write_discs() -> None:
     drives = find_drives()
     record_drives(drives)
 
 
 if __name__ == "__main__":
-    main()
+    write_discs()
