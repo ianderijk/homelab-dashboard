@@ -4,5 +4,5 @@ mise.toml
 *__pycache__
 .ruff_cache
 
-.env
+*.env
 dashboard.db
