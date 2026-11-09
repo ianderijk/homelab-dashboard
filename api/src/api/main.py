@@ -7,6 +7,7 @@ from api.service import (
     get_number_services,
     get_service_names,
     get_disc_names,
+    get_latest_temp_record
 )
 
 app = FastAPI()
@@ -40,3 +41,9 @@ def get_num_services() -> dict:
 @app.get("/discs")
 def get_discs() -> dict:
     return get_disc_names()
+
+
+@app.get("/latest-temp")
+def get_latest_temp() -> dict:
+    temp = get_latest_temp_record()
+    return temp.model_dump()

@@ -3,7 +3,7 @@ from typing import Any
 from fastapi import HTTPException
 from utils.dbutils import execute_query
 
-from api.models import Disc, Service
+from api.models import Disc, Service, Temperature
 
 
 def _get_service_details(service_name: str) -> dict[str, Any]:
@@ -108,3 +108,12 @@ def get_disc_names() -> dict[str, list]:
     data = execute_query(query)
     discs = [x[0] for x in data]
     return {"discs": discs}
+
+
+def get_latest_temp_record() -> Temperature:
+    query = "select temp from fact_temp order by datetime desc limit 1;"
+    data = execute_query(query)
+    if not data:
+        raise HTTPException(status_code=404, detail="No data for temperature")
+
+    return Temperature(temp=data[0][0])

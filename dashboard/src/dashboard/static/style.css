@@ -10,8 +10,10 @@
   --accent: #2a78d6;
   --accent-track: #cde2fb;
   --good: #0ca30c;
+  --warning: #fab219;
   --critical: #d03b3b;
   --on-status: #ffffff;
+  --on-warning: #0b0b0b;
   --radius: 8px;
   --space: 16px;
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -103,6 +105,30 @@ p {
   gap: var(--space);
 }
 
+.stat-tile {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+}
+
+.stat-tile--good,
+.stat-tile--warning,
+.stat-tile--critical {
+  border-top: 3px solid var(--tile-accent);
+}
+
+.stat-tile--good {
+  --tile-accent: var(--good);
+}
+
+.stat-tile--warning {
+  --tile-accent: var(--warning);
+}
+
+.stat-tile--critical {
+  --tile-accent: var(--critical);
+}
+
 .stat-label {
   color: var(--text-secondary);
   font-size: 0.875rem;
@@ -171,6 +197,11 @@ p {
 
 .status--good .status-icon {
   background: var(--good);
+}
+
+.status--warning .status-icon {
+  background: var(--warning);
+  color: var(--on-warning);
 }
 
 .status--critical .status-icon {

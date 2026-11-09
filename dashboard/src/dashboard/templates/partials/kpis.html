@@ -1,3 +1,5 @@
+{% from "macros.html" import status_badge %}
+{% set temperature_badges = {'good': ('✓', 'Normal'), 'warning': ('!', 'High'), 'critical': ('!', 'Critical')} %}
 <div class="kpi-row">
   <div class="card stat-tile">
     <p class="stat-label">Services monitored</p>
@@ -13,4 +15,23 @@
     <p class="stat-value">{{ overview.discs_low }}</p>
     <p class="stat-detail">of {{ overview.discs | length }} monitored</p>
   </div>
+  {% with reading = overview.temperature %}
+    {% if reading %}
+      {% set icon, label = temperature_badges[reading.level] %}
+      <div class="card stat-tile stat-tile--{{ reading.level }}">
+        <p class="stat-label">Pi CPU temperature</p>
+        <p class="stat-value">{{ reading.temp | celsius }}</p>
+        {{ status_badge(reading.level, icon, label) }}
+        <p class="stat-detail">
+          High from {{ reading.warning | celsius }}, critical above {{ reading.critical | celsius }}
+        </p>
+      </div>
+    {% else %}
+      <div class="card stat-tile">
+        <p class="stat-label">Pi CPU temperature</p>
+        <p class="stat-value muted">—</p>
+        <p class="stat-detail">No data yet</p>
+      </div>
+    {% endif %}
+  {% endwith %}
 </div>

@@ -37,6 +37,22 @@ def test_disc_mount_maps_onto_path(
     assert disc.name == "/dev/sdb1"
 
 
+def test_temperature(api: ApiClient, healthy_api: respx.MockRouter) -> None:
+    reading = api.temperature()
+
+    assert reading is not None
+    assert reading.temp == 65.0
+    assert reading.critical == 70.0
+
+
+def test_temperature_without_data_is_none(
+    api: ApiClient, api_mock: respx.MockRouter
+) -> None:
+    api_mock.get("/latest-temp").respond(404, json={"detail": "No data"})
+
+    assert api.temperature() is None
+
+
 def test_connection_failure_raises_unavailable(
     api: ApiClient, api_mock: respx.MockRouter
 ) -> None:

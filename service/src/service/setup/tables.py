@@ -35,12 +35,21 @@ FACT_DISCS = """
     );
     """
 
+FACT_TEMPERATURE = """
+    create table if not exists fact_temp (
+    id integer primary key autoincrement,
+    temp numeric,
+    datetime timestamp
+    );
+    """
+
 
 def create_tables() -> None:
     execute_statement(DIM_SERVICES)
     execute_statement(FACT_SERVICES)
     execute_statement(DIM_DISCS)
     execute_statement(FACT_DISCS)
+    execute_statement(FACT_TEMPERATURE)
 
 
 def drop_tables() -> None:
@@ -49,6 +58,7 @@ def drop_tables() -> None:
         "fact_services",
         "dim_discs",
         "fact_discs",
+        "fact_temp",
     )
     for table in tables:
         drop = f"drop table if exists {table};"
@@ -56,5 +66,4 @@ def drop_tables() -> None:
 
 
 if __name__ == "__main__":
-    drop_tables()
     create_tables()

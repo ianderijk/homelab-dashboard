@@ -53,4 +53,7 @@ def healthy_api(api_mock: respx.MockRouter) -> respx.MockRouter:
             "warning": 0.25,
         }
     )
+    router.get("/latest-temp").respond(
+        json={"temp": 65.0, "warning": 60.0, "critical": 70.0}
+    )
     return router

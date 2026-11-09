@@ -11,7 +11,7 @@ from fastapi.templating import Jinja2Templates
 
 from dashboard.client import ApiClient, ApiUnavailableError
 from dashboard.config import Settings, load_settings
-from dashboard.formatting import percent, size_from_gib
+from dashboard.formatting import celsius, percent, size_from_gib
 from dashboard.overview import Overview, fetch_overview
 
 PACKAGE_DIR = Path(__file__).parent
@@ -19,6 +19,7 @@ PACKAGE_DIR = Path(__file__).parent
 templates = Jinja2Templates(directory=PACKAGE_DIR / "templates")
 templates.env.filters["percent"] = percent
 templates.env.filters["size"] = size_from_gib
+templates.env.filters["celsius"] = celsius
 
 
 def get_api(request: Request) -> ApiClient:
