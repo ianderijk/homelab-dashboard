@@ -2,7 +2,7 @@ from urllib.parse import quote
 
 import httpx
 
-from dashboard.models import DiscUsage, ServiceStatus
+from dashboard.models import DiscUsage, ServiceStatus, TemperatureReading
 
 
 class ApiUnavailableError(Exception): ...
@@ -12,8 +12,9 @@ class ApiClient:
     """Thin wrapper over the homelab API.
 
     Connection failures surface as ``ApiUnavailableError`` so the UI can show an
-    offline state. A 404 for a single service or disc means it has no recorded
-    data yet and is returned as ``None``; any other HTTP error is raised.
+    offline state. A 404 for a single service, disc or the temperature means it
+    has no recorded data yet and is returned as ``None``; any other HTTP error
+    is raised.
     """
 
     def __init__(self, http: httpx.Client) -> None:
@@ -53,3 +54,7 @@ class ApiClient:
     def disc(self, mount: str) -> DiscUsage | None:
         data = self._get_optional_json(f"/disc/{quote(mount.lstrip('/'))}")
         return DiscUsage.model_validate(data) if data else None
+
+    def temperature(self) -> TemperatureReading | None:
+        data = self._get_optional_json("/latest-temp")
+        return TemperatureReading.model_validate(data) if data else None

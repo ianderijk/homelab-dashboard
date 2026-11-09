@@ -1,6 +1,6 @@
 import pytest
-from dashboard.formatting import percent, size_from_gib
-from dashboard.models import DiscUsage
+from dashboard.formatting import celsius, percent, size_from_gib
+from dashboard.models import DiscUsage, Level, TemperatureReading
 
 
 def _disc(free: float, size: float = 100.0, warning: float = 0.25) -> DiscUsage:
@@ -40,3 +40,22 @@ def test_percent(fraction: float, expected: str) -> None:
 )
 def test_size_from_gib(gib: float, expected: str) -> None:
     assert size_from_gib(gib) == expected
+
+
+@pytest.mark.parametrize(
+    ("temp", "expected"),
+    [
+        (59.9, "good"),
+        (60.0, "warning"),
+        (70.0, "warning"),
+        (70.1, "critical"),
+    ],
+)
+def test_temperature_level(temp: float, expected: Level) -> None:
+    reading = TemperatureReading(temp=temp, warning=60.0, critical=70.0)
+
+    assert reading.level == expected
+
+
+def test_celsius() -> None:
+    assert celsius(48.25) == "48.2 °C"

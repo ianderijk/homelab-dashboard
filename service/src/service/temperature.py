@@ -29,4 +29,3 @@ def write_temp_record() -> None:
     insert = "insert into fact_temp (temp, datetime) values (:temp, :datetime)"
     params = {"temp": temp.temp, "datetime": temp.record_timestamp}
     execute_statement(insert, params)
-

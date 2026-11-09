@@ -15,3 +15,9 @@ class Disc(BaseModel):
     used: float
     free: float
     warning: float = 0.25
+
+
+class Temperature(BaseModel):
+    temp: float
+    warning: float = 60
+    critical: float = 70

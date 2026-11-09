@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from dashboard.client import ApiClient
-from dashboard.models import DiscUsage, ServiceStatus
+from dashboard.models import DiscUsage, ServiceStatus, TemperatureReading
 
 
 @dataclass(frozen=True)
@@ -22,6 +22,7 @@ class Overview:
     service_count: int
     services: list[ServiceRow]
     discs: list[DiscRow]
+    temperature: TemperatureReading | None
     fetched_at: datetime
 
     @property
@@ -42,5 +43,6 @@ def fetch_overview(api: ApiClient) -> Overview:
         service_count=api.service_count(),
         services=[ServiceRow(name, api.service(name)) for name in api.service_names()],
         discs=[DiscRow(mount, api.disc(mount)) for mount in api.disc_mounts()],
+        temperature=api.temperature(),
         fetched_at=datetime.now().astimezone(),
     )

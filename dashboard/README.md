@@ -40,6 +40,10 @@ make dashboard    # serves on http://127.0.0.1:8001
   icon and a text label.
 - A disc meter turns red, with a "Low space" badge, when its free fraction drops
   below the API's `warning` threshold. The tick on the meter marks that threshold.
+- The Pi CPU temperature tile (from `/latest-temp`) is green below the API's
+  `warning` value, amber from `warning` up to and including `critical`, and red
+  above `critical`. The colour sits on the badge and the tile's top edge; the
+  number itself stays in the normal text colour so it remains legible.
 - While a refresh is in flight, the panel dims instead of being cleared, so the
   layout never jumps.
 

@@ -38,6 +38,20 @@ async def test_index_renders_overview(
     assert "Chapflix" in html
     assert "No data yet" in html
     assert "Low space" in html
+    assert "65.0 °C" in html
+    assert "stat-tile--warning" in html
+
+
+async def test_temperature_tile_without_data(
+    api: ApiClient, healthy_api: respx.MockRouter
+) -> None:
+    healthy_api.get("/latest-temp").respond(404, json={"detail": "No data"})
+
+    response = await _get(api, "/panels/overview")
+
+    assert response.status_code == 200
+    assert "Pi CPU temperature" in response.text
+    assert "stat-tile--" not in response.text
 
 
 async def test_panel_is_a_fragment(
